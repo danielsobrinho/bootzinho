@@ -9,7 +9,9 @@ fi
 }
 #$titulo="Bootzinho"
 zenity --info --title="$titulo" --text="Bootizinho, fácil e gratuito"
-zenity --info --title="$titulo" --text="Primeiro escolha o pendrive!"
+sair
+zenity --info --title="$titulo" --text="Primeiro escolha o pendrive!. Procure no terminal e siga o exemplo."
+sair
 clear
 sudo fdisk -l
 echo -e " \033[1;37mLOCALIZE O SEU PENDRIVE ACIMA\033[1;37m!"
@@ -31,20 +33,19 @@ case  $? in
 	*) exit ;;
 	esac
 }
-#17
+
 Voltar(){
 
 	zenity --question --text="Deseja encerrar o programa?"
-	if [ "$?" -eq 1 ]; then
+	if [ "$?" -eq 0 ]; then
 		exit
 	else
-		main
+		Main
 	fi
 
 	Main
-#28
 }
-#30
+
 Continuar(){
 
 	zenity --question --text="Deseja formatar o pendrive no formato fat 32?"
@@ -54,7 +55,7 @@ Continuar(){
 		sudo mkfs.vfat -I $pendrive | zenity --progress --title='Progresso' --text="Formatando..." --percentage=0 --pulsate
 		Gravar
 	else
-		Gravar	
+		Gravar
 	fi
 
 	Main
@@ -66,11 +67,14 @@ Gravar(){
 	if [ "$?" -eq 0 ]; then
 
 		sudo umount $pendrive
+    clear
+    zenity --info --title="$titulo" --text="Não feche o seu terminal! O processo pode ser demorado, o Bootzinho irá avisa-lo assim que terminar!"
 		sudo dd if=$imagemISO of=$pendrive && sync | zenity --progress --title="Progresso" --text="Gravando..." --percentage=0 --pulsate
-	else
+    Voltar
+  else
 		Voltar
 	fi
-	Main
+	Exit
 
 }
 
