@@ -1,16 +1,28 @@
 #!/bin/bash
 export titulo=Bootzinho
-
+export info="zenity --info --title=$titulo"
 Main(){
+#Função Sair - Utilizada para indificar quando clicado no botão de fechar e assim encerrar o script.
 sair () {
-if [ "$?" -eq 1 ]; then
+if [ "$?" -ne "0" ]; then
         exit
 fi
 }
-#$titulo="Bootzinho"
-zenity --info --title="$titulo" --text="Bootizinho, fácil e gratuito"
+#Função de verificar dependência - Usada para verificar se o pacote pv encontra-se instalado no sistema.
+verificarDependencia(){
+    if [ -n "$dependencias" ]; then
+      $info --text="Você já possui todas as dependencias para o Bootizinho"
+    else
+      $info --text="Você precisa instalar o pacote PV para funcionamento correto do Bootizinho.\nDigite 'sudo apt-get install pv' em seu terminal\nDepois volte a executar o Bootizinho."
+    fi
+}
+
+#Verificando a dependência
+dependencias=$(dpkg -l | grep "pv");
+verificarDependencia
+$info --text="Bootizinho, fácil e gratuito"
 sair
-zenity --info --title="$titulo" --text="Primeiro escolha o pendrive!. Procure no terminal e siga o exemplo."
+$info --text="Primeiro escolha o pendrive!. Procure no terminal e siga o exemplo."
 sair
 clear
 sudo fdisk -l
@@ -18,13 +30,14 @@ echo -e " \033[1;37mLOCALIZE O SEU PENDRIVE ACIMA\033[1;37m!"
 pendrive=$(zenity --entry --title="$titulo" --text="Digite o caminho do seu pendrive" --entry-text="Ex: /dev/sdb1");
 sair
 clear
-zenity --info --title="$titulo" --text="Escolha a imagem ISO que deseja utilizar!"
+$info --text="Escolha a imagem ISO que deseja utilizar!"
 sair
 clear
 imagemISO=$(zenity --title="$titulo" --file-selection);
 sair
 clear
-zenity --title="$titulo - Confira as informações" --question --text="Imagem ISO: $imagemISO, Pendrive: $pendrive, escolhidos com sucesso, deseja continuar?"
+zenity --warning --title="$titulo - Confirmando informações" --text="Confira suas informações:\nImagem ISO: $imagemISO\nPendrive: $pendrive." --ellipsize
+zenity --question --title="$titulo" --text="As informações estão corretas e deseja continuar?"
 sair
 
 case  $? in
@@ -35,19 +48,16 @@ case  $? in
 }
 
 Voltar(){
-
 	zenity --question --text="Deseja encerrar o programa?"
-	if [ "$?" -eq 0 ]; then
-		exit
-	else
-		Main
+	if [ "$?" -eq "0" ]; then
+	  exit
+  elif [ "$?" -q "1" ]; then
+    Main
 	fi
 
-	Main
 }
 
 Continuar(){
-
 	zenity --question --text="Deseja formatar o pendrive no formato fat 32?"
 	if [ "$?" -eq 0 ]; then
 		echo "formatando.. $pendrive"
@@ -58,24 +68,21 @@ Continuar(){
 		Gravar
 	fi
 
-	Main
-
+Main
 }
 
 Gravar(){
 	zenity --question --text="Deseja iniciar a gravação da imagem ISO no pendrive: $pendrive ?"
 	if [ "$?" -eq 0 ]; then
-
 		sudo umount $pendrive
     clear
     zenity --info --title="$titulo" --text="Não feche o seu terminal! O processo pode ser demorado, o Bootzinho irá avisa-lo assim que terminar!"
-		sudo dd if=$imagemISO of=$pendrive && sync | zenity --progress --title="Progresso" --text="Gravando..." --percentage=0 --pulsate
+		pv $imagemISO | sudo dd of=$pendrive && sync | zenity --progress --title="Progresso" --text="Concluído" --percentage=0 --pulsate
     Voltar
   else
 		Voltar
 	fi
-	Exit
 
+Exit
 }
-
 Main
