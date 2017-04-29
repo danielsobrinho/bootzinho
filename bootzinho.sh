@@ -11,16 +11,16 @@ fi
 #Função de verificar dependência - Usada para verificar se o pacote pv encontra-se instalado no sistema.
 verificarDependencia(){
     if [ -n "$dependencias" ]; then
-      $info --text="Você já possui todas as dependencias para o Bootizinho"
+      $info --text="Voce ja possui todas as dependencias para o Bootizinho"
     else
-      $info --text="Você precisa instalar o pacote PV para funcionamento correto do Bootizinho.\nDigite 'sudo apt-get install pv' em seu terminal\nDepois volte a executar o Bootizinho."
+      $info --text="Voce precisa instalar o pacote PV para funcionamento correto do Bootizinho.\nDigite 'sudo apt-get install pv' em seu terminal\nDepois volte a executar o Bootizinho."
     fi
 }
 
 #Verificando a dependência
 dependencias=$(dpkg -l | grep "pv");
 verificarDependencia
-$info --text="Bootizinho, fácil e gratuito"
+$info --text="Bootizinho, facil e gratuito"
 sair
 $info --text="Primeiro escolha o pendrive!. Procure no terminal e siga o exemplo."
 sair
@@ -36,8 +36,8 @@ clear
 imagemISO=$(zenity --title="$titulo" --file-selection);
 sair
 clear
-zenity --warning --title="$titulo - Confirmando informações" --text="Confira suas informações:\nImagem ISO: $imagemISO\nPendrive: $pendrive." --ellipsize
-zenity --question --title="$titulo" --text="As informações estão corretas e deseja continuar?"
+zenity --warning --title="$titulo - Confirmando informacoes" --text="Confira suas informacoes:\nImagem ISO: $imagemISO\nPendrive: $pendrive." --ellipsize
+zenity --question --title="$titulo" --text="As informacoes estao corretas e deseja continuar?"
 sair
 
 case  $? in
@@ -72,12 +72,12 @@ Main
 }
 
 Gravar(){
-	zenity --question --text="Deseja iniciar a gravação da imagem ISO no pendrive: $pendrive ?"
+	zenity --question --text="Deseja iniciar a gravacao da imagem ISO no pendrive: $pendrive ?"
 	if [ "$?" -eq 0 ]; then
 		sudo umount $pendrive
     clear
-    zenity --info --title="$titulo" --text="Não feche o seu terminal! O processo pode ser demorado, o Bootzinho irá avisa-lo assim que terminar!"
-		pv $imagemISO | sudo dd of=$pendrive && sync | zenity --progress --title="Progresso" --text="Concluído" --percentage=0 --pulsate
+    zenity --info --title="$titulo" --text="Nao feche o seu terminal! O processo pode ser demorado, o Bootzinho ira avisa-lo assim que terminar!"
+		pv $imagemISO | sudo dd of=$pendrive && sync | zenity --progress --title="Progresso" --text="Concluido" --percentage=0 --pulsate
     Voltar
   else
 		Voltar
