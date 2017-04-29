@@ -18,7 +18,7 @@ verificarDependencia(){
 }
 
 #Verificando a dependência
-dependencias=$(dpkg -l | grep "pv");
+dependencias=$(whereis pv | grep "pv" | cut -d':' -f1);
 verificarDependencia
 $info --text="Bootizinho, facil e gratuito"
 sair
